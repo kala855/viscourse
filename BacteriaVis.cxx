@@ -20,9 +20,9 @@
 #define VTK_CREATE(type, name) \
     vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
 
-static const char *labels[] = {"AeroBacter","Bru. Abortus","Bru. Anthra","Diplococcus",
-    "E. Coli","Klebsiella","MycoBacterium","Proteus","Pseudomonas","Salmonella","Salmo. Schott",
-    "Staphy. Albus","Staphy. Aure","Strepto. Feca","Strepto. Hemo","Strepto. Viri"};
+static const char *labels[] = {"AeroBac","Bru.Abort","Bru.Anth","Diploco",
+    "E.Coli","Klebsi","MycoBac","Proteus","Pseudomo","Salmo","Salmo.Schott",
+    "Staphy.Albus","Staphy.Aure","Strep.Feca","Strep.Hemo","Strep.Viri"};
 
 int main(int argc, char* argv[])
 {
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 
   VTK_CREATE(vtkContextView,view);
   view->GetRenderer()->SetBackground(1.0,1.0,1.0);
-  view->GetRenderWindow()->SetSize(800,600);
+  view->GetRenderWindow()->SetSize(1024,768);
   VTK_CREATE(vtkChartXY, chart);
   view->GetScene()->AddItem(chart);
 
@@ -69,32 +69,38 @@ int main(int argc, char* argv[])
               <<" Penicillin:" << (table->GetValue(i,1)).ToDouble()
               <<" Streptomycin:" << (table->GetValue(i,2)).ToDouble()
               <<" Neomycin:" << (table->GetValue(i,3)).ToDouble()
-              <<" Gram Staining:" << (table->GetValue(i,4)).ToDouble()
+              <<" Gram Staining:" << (table->GetValue(i,4)).ToChar()
               << endl;
         arrXTickPositions->SetValue(i,i+1);
         stringLabels->SetValue(i,labels[i]);
-        table->SetValue(i,1,vtkVariant(8.0+log(table->GetValue(i,1).ToDouble())));
-        table->SetValue(i,2,vtkVariant(8.0+log(table->GetValue(i,2).ToDouble())));
-        table->SetValue(i,3,vtkVariant(8.0+log(table->GetValue(i,3).ToDouble())));
+        table->SetValue(i,1,vtkVariant((8.0+log(table->GetValue(i,1).ToDouble()))));
+        table->SetValue(i,2,vtkVariant((8.0+log(table->GetValue(i,2).ToDouble()))));
+        table->SetValue(i,3,vtkVariant((8.0+log(table->GetValue(i,3).ToDouble()))));
     }
 
   vtkPlot *line = 0;
-  chart->GetAxis(1)->SetTickLabels(stringLabels);
-  chart->GetAxis(1)->SetTickPositions(arrXTickPositions);
+
+  chart->GetAxis(vtkAxis::BOTTOM)->SetCustomTickPositions(arrXTickPositions,stringLabels);
+  chart->GetAxis(vtkAxis::BOTTOM)->SetTitle("Bacteria");
+  chart->GetAxis(vtkAxis::LEFT)->SetTitle("log(MIC)+8.0");
+  chart->GetAxis(vtkAxis::LEFT)->SetLogScale(true);
+  chart->GetAxis(vtkAxis::LEFT)->LogScaleOn();
+  chart->Update();
+
   chart->SetShowLegend(true);
   chart->SetTitle("Minimum Inhibitory Concentration");
 
   line = chart->AddPlot(vtkChart::BAR);
   line->SetInputData(table,0,1);
-  line->SetColor(100,200,25,255);
+  line->SetColor(89,154,211,255);
 
   line = chart->AddPlot(vtkChart::BAR);
   line->SetInputData(table,0,2);
-  line->SetColor(10,50,25,255);
+  line->SetColor(249,166,90,225);
 
   line = chart->AddPlot(vtkChart::BAR);
   line->SetInputData(table,0,3);
-  line->SetColor(10,50,250,255);
+  line->SetColor(158,102,171,200);
 
   view->GetRenderWindow()->SetMultiSamples(0);
   view->GetInteractor()->Initialize();
