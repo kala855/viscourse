@@ -13,11 +13,16 @@
 #include <vtkChartXY.h>
 #include <vtkAxis.h>
 #include <vtkDelimitedTextReader.h>
+#include <vtkDoubleArray.h>
+#include <vtkStringArray.h>
 #include <math.h>
 
 #define VTK_CREATE(type, name) \
     vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
 
+static const char *labels[] = {"AeroBacter","Bru. Abortus","Bru. Anthra","Diplococcus",
+    "E. Coli","Klebsiella","MycoBacterium","Proteus","Pseudomonas","Salmonella","Salmo. Schott",
+    "Staphy. Albus","Staphy. Aure","Strepto. Feca","Strepto. Hemo","Strepto. Viri"};
 
 int main(int argc, char* argv[])
 {
@@ -52,6 +57,12 @@ int main(int argc, char* argv[])
   std::cout << "Table has " << table->GetNumberOfColumns()
             << " columns." << std::endl;
 
+  VTK_CREATE(vtkDoubleArray, arrXTickPositions);
+  arrXTickPositions->SetNumberOfValues(table->GetNumberOfRows());
+
+  VTK_CREATE(vtkStringArray, stringLabels);
+  stringLabels->SetNumberOfValues(table->GetNumberOfRows());
+
   for(vtkIdType i = 0; i < table->GetNumberOfRows(); i++)
     {
     std::cout <<"Data:" << (table->GetValue(i,0)).ToDouble()
@@ -60,13 +71,16 @@ int main(int argc, char* argv[])
               <<" Neomycin:" << (table->GetValue(i,3)).ToDouble()
               <<" Gram Staining:" << (table->GetValue(i,4)).ToDouble()
               << endl;
-
+        arrXTickPositions->SetValue(i,i+1);
+        stringLabels->SetValue(i,labels[i]);
         table->SetValue(i,1,vtkVariant(8.0+log(table->GetValue(i,1).ToDouble())));
         table->SetValue(i,2,vtkVariant(8.0+log(table->GetValue(i,2).ToDouble())));
         table->SetValue(i,3,vtkVariant(8.0+log(table->GetValue(i,3).ToDouble())));
     }
 
   vtkPlot *line = 0;
+  chart->GetAxis(1)->SetTickLabels(stringLabels);
+  chart->GetAxis(1)->SetTickPositions(arrXTickPositions);
   chart->SetShowLegend(true);
   chart->SetTitle("Minimum Inhibitory Concentration");
 
@@ -81,7 +95,6 @@ int main(int argc, char* argv[])
   line = chart->AddPlot(vtkChart::BAR);
   line->SetInputData(table,0,3);
   line->SetColor(10,50,250,255);
-
 
   view->GetRenderWindow()->SetMultiSamples(0);
   view->GetInteractor()->Initialize();
