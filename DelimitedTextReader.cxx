@@ -69,19 +69,16 @@ int main(int argc, char* argv[])
   ejey->SetLogScale(false);
   ejey->Update();
 
-  line = chart->AddPlot(vtkChart::BAR);
-  line->SetInputData(table,0,1);
-  line->SetColor(255,0,0,255);
 
-  line = chart->AddPlot(vtkChart::BAR);
-  line->SetInputData(table,0,2);
-  line->SetColor(0,255,0,255);
+  int i=0, j=0;
+  //for (i = 0; i < table->GetNumberOfRows(); i++) {
+      //for (j = 1; j < table->GetNumberOfColumns()-1; j++) {
+          line = chart->AddPlot(vtkChart::BAR);
+          line->SetInputData(table,1,0);
+          line->SetColor(10,50,25,255);
+     // }
 
-  line = chart->AddPlot(vtkChart::BAR);
-  line->SetInputData(table,0,3);
-  line->SetColor(0,255,255,255);
-
-
+//  }
 
   view->GetRenderWindow()->SetMultiSamples(0);
   view->GetInteractor()->Initialize();
