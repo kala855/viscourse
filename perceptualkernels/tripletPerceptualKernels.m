@@ -4,6 +4,7 @@ close all;
 
 N = 5; %Number of items (Divisions)
 I = imread('ImagenEntrada1Medio.png'); %Input Image
+hh = N*N*N;
 
 SubImages = cell(N);
 AnchoSubImagen = floor(size(I,2)/N);
@@ -15,10 +16,6 @@ for i=1:N
     Fin = Fin + AnchoSubImagen;
 end
 
-%indiceReferenciai = randperm(N);
-%indiceComparacionk = randperm(N);
-%indiceComparacionl = randperm(N);
-
 perceptualKernel = 30*eye(N);
 indice = 0;
 
@@ -28,18 +25,11 @@ for i = 1:N
             indiceReferenciai = randi(N);
             indiceComparacionk = randi(N);
             indiceComparacionl = randi(N);
-            while(indiceComparacionk == indiceComparacionl)
+            
+            while((indiceComparacionk == indiceComparacionl) || (indiceReferenciai == indiceComparacionk) ||(indiceReferenciai == indiceComparacionl))
                 indiceComparacionk = randi(N);
                 indiceComparacionl = randi(N);
-            end  
-            
-            while(indiceReferenciai == indiceComparacionk)
-                indiceComparacionk = randi(N);
-            end
-            
-            while(indiceReferenciai == indiceComparacionl)
-                indiceComparacionl = randi(N);
-            end
+            end 
              
             subplot(2,3,2); imshow(SubImages{indiceReferenciai});title('Imagen de Referencia')
             subplot(2,3,4); imshow(SubImages{indiceComparacionk});title('a');
@@ -59,6 +49,9 @@ for i = 1:N
         end
     end    
 end
+
+%%perceptualKernel = perceptualKernel./hh;
+
 close all;
 subplot(2,2,1);
 imshow(perceptualKernel,[0 max(max(perceptualKernel))]);title('Mas blanco es mas parecido')
