@@ -3,7 +3,7 @@ clear all;
 close all;
 
 N = 5; %Number of items (Divisions)
-I = imread('ImagenEntrada1Medio.png'); %Input Image
+I = imread('imagenSCShape.png'); %Input Image
 hh = N*N*N;
 
 SubImages = cell(N);
@@ -18,7 +18,8 @@ end
 
 perceptualKernel = 30*eye(N);
 indice = 0;
-
+%%Podrían no ser necesarios los tres ciclos para abarcar todas las
+%%posibilidades. Podría usarse un ciclo que vaya hasta N^3
 for i = 1:N
     for k = 1:N
         for l = 1:N
