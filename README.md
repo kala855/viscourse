@@ -1,5 +1,4 @@
 # viscourse
-================
 
 ##Trabajos de la Materia Visualización de Datos.
 
