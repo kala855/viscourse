@@ -5,7 +5,7 @@ close all;
 load('contador.mat');
 
 N = 5; %Number of items (Divisions)
-I = imread('ImagenEntrada1Medio.png'); %Input Image
+I = imread('imagenSCShape.png'); %Input Image
 hh = N*N*N;
 
 SubImages = cell(N);
