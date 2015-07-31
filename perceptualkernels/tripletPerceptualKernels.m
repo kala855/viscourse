@@ -2,8 +2,10 @@ clc;
 clear all;
 close all;
 
+load('contador.mat');
+
 N = 5; %Number of items (Divisions)
-I = imread('imagenSCShape.png'); %Input Image
+I = imread('ImagenEntrada1Medio.png'); %Input Image
 hh = N*N*N;
 
 SubImages = cell(N);
@@ -16,10 +18,9 @@ for i=1:N
     Fin = Fin + AnchoSubImagen;
 end
 
-perceptualKernel = 30*eye(N);
+perceptualKernel = zeros(N);
 indice = 0;
-%%Podrían no ser necesarios los tres ciclos para abarcar todas las
-%%posibilidades. Podría usarse un ciclo que vaya hasta N^3
+
 for i = 1:N
     for k = 1:N
         for l = 1:N
@@ -55,4 +56,16 @@ end
 
 close all;
 subplot(2,2,1);
+
+maxNumber = max(max(perceptualKernel));
+
+perceptualKernel = perceptualKernel + eye(N)*maxNumber;
+filename = ['perceptualkernel' num2str(contador) '.mat'];
+
+save(filename, 'perceptualKernel');
+
+contador = contador + 1;
+
+save('contador.mat','contador');
+
 imshow(perceptualKernel,[0 max(max(perceptualKernel))]);title('Mas blanco es mas parecido')
